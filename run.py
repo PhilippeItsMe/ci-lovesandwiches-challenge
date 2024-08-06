@@ -29,7 +29,7 @@ def get_sales_data ():
         validate_data(sales_data)
 
         if validate_data (sales_data):
-            print ("Data is valid")
+            print ("Data is valid \n")
             break
 
     return (sales_data)
@@ -71,8 +71,36 @@ def update_worksheet(data, worksheet):
     print (f"Updating {worksheet} worksheet... \n")
     surplus_worksheet = SHEET.worksheet(worksheet)
     surplus_worksheet.append_row(data)
-    print (f"Surplus {worksheet} updated successfully.\n")
+    print (f"Worksheet {worksheet} updated successfully.\n")
 
+def get_last_5_entries_sales():
+    """
+    Calculate the wished stock for the next market, the average of the last 5 market + 10% + rounder number
+    """
+    sales = SHEET.worksheet('sales')
+    #column = sales.col_values(3) #dont start at 0
+    #print (column)
+
+    columns = []
+    for ind in range(1,7):
+            column = sales.col_values(ind)
+            columns.append (column[-5:]) #the 5 last elements
+    return (columns)
+
+def calculate_stock_data (data):
+    """
+    Calculate the advised stock data
+    """
+    print ("Calculating the next stock data...\n")
+    new_stock_data = []
+
+    for column in data:
+        int_column = [int(num) for num in column]
+        average = sum(int_column) / len(int_column)
+        stock_num = average * 1.1
+        new_stock_data.append (round(stock_num))
+
+    return new_stock_data
 
 def main():
     """
@@ -83,6 +111,9 @@ def main():
     update_worksheet(sales_data,'sales')
     surplus = calculate_surplus_data (sales_data)
     update_worksheet(surplus, 'surplus')
+    sales_columns = get_last_5_entries_sales()
+    stock_data = calculate_stock_data (sales_columns)
+    update_worksheet(stock_data, 'stock')
 
 print ('Welcome to the Love Sandwiches Data Automation')
 main()
