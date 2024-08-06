@@ -38,7 +38,7 @@ def validate_data (values):
     Validate if there a 6 values inside the list and if the values are integers.
     """
     try:
-        [int(value) for value in values] #Creation of a list with all the value in values
+        [int(value) for value in values] #Creation of a list with all the value in values without error message
         if len(values) != 6:
             raise ValueError (
                 f"Exactly 6 values are required" #Definition of the value error message
@@ -49,5 +49,17 @@ def validate_data (values):
 
     return True 
 
-data = get_sales_data()
+def update_sales_worksheet(data):
+    """
+    Upload sales data in the sales worksheet
+    """
+    print ("Updating sales worksheet... \n")
+    sales_worksheet = SHEET.worksheet('sales')
+    sales_worksheet.append_row(data)
+    print ("Sales worksheet updated successfully.\n")
 
+
+
+data = get_sales_data()
+sales_data = [int(num) for num in data]
+update_sales_worksheet(sales_data)
