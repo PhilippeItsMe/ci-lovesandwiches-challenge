@@ -31,9 +31,15 @@ def validate_data (values):
     Validate if there a 6 values inside the list and if the values are integers.
     """
     try:
+        [int(value) for value in values] #Creation of a list with all the value in values
         if len(values) != 6:
-            raise VAlueError ()
-            f"Exactly 6 values are required"
+            raise ValueError (
+                f"Exactly 6 values are required"
+            )
+    except ValueError as e:
+        print (f"Invalid data: {e}, please try again.\n")
+
+
 
 
 get_sales_data()
