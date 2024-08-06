@@ -1,5 +1,6 @@
 import gspread
 from google.oauth2.service_account import Credentials
+from pprint import pprint
 
 SCOPE = [
     "https://www.googleapis.com/auth/spreadsheets",
@@ -58,8 +59,39 @@ def update_sales_worksheet(data):
     sales_worksheet.append_row(data)
     print ("Sales worksheet updated successfully.\n")
 
+def calculate_surplus_data (sales_row):
+    """
+    Calulate the surplus by comparing the sales and the stock 
+    """
+    print ('Calulating the surplus... \n')
+    stock = SHEET.worksheet ("stock").get_all_values()
+    stock_row = stock[-1]
+    
+    surplus_data = []
+    for stock, sales in zip(stock_row, sales_row): #Zip method allow to work on 2 lists on the same time
+        surplus = int(stock) - sales
+        surplus_data.append(surplus)
+    return (surplus_data)
+
+def update_surplus_worksheet(surplus):
+    """
+    Upload surplus data in the sales worksheet
+    """
+    print ("Updating surplus worksheet... \n")
+    surplus_worksheet = SHEET.worksheet('surplus')
+    surplus_worksheet.append_row(surplus)
+    print ("Surplus worksheet updated successfully.\n")
 
 
-data = get_sales_data()
-sales_data = [int(num) for num in data]
-update_sales_worksheet(sales_data)
+def main():
+    """
+    Run all program functions
+    """
+    data = get_sales_data()
+    sales_data = [int(num) for num in data]
+    update_sales_worksheet(sales_data)
+    surplus = calculate_surplus_data (sales_data)
+    update_surplus_worksheet(surplus)
+
+print ('Welcome to the Love Sandwiches Data Automation')
+main()
